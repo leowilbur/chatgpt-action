@@ -10,6 +10,8 @@ app.get('/', (req, res) => {
     })
 });
 
+app.use(express.static('public'));
+
 // Sample data
 const services = [
     {
