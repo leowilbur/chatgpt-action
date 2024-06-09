@@ -1,9 +1,5 @@
 const express = require('express');
-const axios = require('axios');
 const app = express();
-const querystring = require('querystring');
-const usZips = require('us-zips');
-const { geo2zip } = require('geo2zip');
 
 app.use(express.json());
 app.use(express.urlencoded());
