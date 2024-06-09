@@ -4,6 +4,37 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded());
 
+const redis = require('redis');
+
+const client = redis.createClient({
+    url: process.env.REDIS_URL,
+    database: 1,
+});
+
+client.on('error', (error) => {
+    console.error('Error connecting to Redis:', error);
+});
+client.on('connect', () => {
+    console.log('Successfully connected to Redis');
+});
+
+client.connect();
+
+client.getObj = async (key) => {
+    try {
+        const data = await client.get(key);
+        return JSON.parse(data);
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+
+client.setObj = (key, obj) => {
+    client.set(key, JSON.stringify(obj), 'EX', 0).catch(console.error);
+}
+
+
 app.get('/', (req, res) => {
     res.json({
         success: true,
@@ -50,10 +81,17 @@ const services = [
     }
 ];
 
+app.post('/data/set', async (req, res) => {
+    await client.setObj('chatgpt_dataset', req.body ?? [])
+    res.json({
+        success: true,
+    })
+});
 
 // List all services, optionally filtered by location, serviceType, and vietnamese
-app.get('/services', (req, res) => {
+app.get('/services', async (req, res) => {
     const { location, serviceType, vietnamese } = req.query;
+    const services = await client.getObj('chatgpt_dataset') ?? []
     let filteredServices = services;
 
     if (location) {

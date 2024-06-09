@@ -1,0 +1,105 @@
+openapi: "3.1.0"
+info:
+  version: 1.0.0
+  title: Service Directory API
+  description: API for searching and retrieving information about various services in different locations.
+  license:
+    name: MIT
+servers:
+  - url: https://ca3ef8e7407459d882e9416489540834.serveo.net
+paths:
+  /services:
+    get:
+      summary: List all services
+      operationId: listServices
+      tags:
+        - services
+      parameters:
+        - name: location
+          in: query
+          description: The city where the service is located (e.g., Toronto, Vancouver)
+          required: false
+          schema:
+            type: string
+        - name: serviceType
+          in: query
+          description: The type of service (e.g., Sửa xe, Hớt tóc)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of services matching the query
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceList"
+  /services/{serviceName}:
+    get:
+      summary: Get details of a specific service by name
+      operationId: getServiceByName
+      tags:
+        - services
+      parameters:
+        - name: serviceName
+          in: path
+          required: true
+          description: The name of the service to retrieve details for
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detailed information about the service
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    Service:
+      type: object
+      properties:
+        location:
+          type: string
+          description: The city where the service is located
+        serviceType:
+          type: string
+          description: The type of service provided
+        vietnamese:
+          type: string
+          description: Whether the service caters to Vietnamese speakers
+        name:
+          type: string
+          description: The name of the service
+        phone:
+          type: string
+          description: The contact phone number for the service
+        email:
+          type: string
+          description: The contact email address for the service
+        website:
+          type: string
+          description: The website URL for the service
+        intro:
+          type: string
+          description: A brief introduction or description of the service
+        discount:
+          type: string
+          description: Details of any discounts offered by the service
+    ServiceList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Service"
+        code:
+          type: integer
+          format: int32
+          description: The error code
+        message:
+          type: string
+          description: The error message
