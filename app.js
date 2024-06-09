@@ -95,15 +95,15 @@ app.get('/services', async (req, res) => {
     let filteredServices = services;
 
     if (location) {
-        filteredServices = filteredServices.filter(service => service.location.toLowerCase() === location.toLowerCase());
+        filteredServices = filteredServices.filter(service => service.Location.toLowerCase() === location.toLowerCase());
     }
 
     if (serviceType) {
-        filteredServices = filteredServices.filter(service => service.serviceType.toLowerCase() === serviceType.toLowerCase());
+        filteredServices = filteredServices.filter(service => service.Service.toLowerCase() === serviceType.toLowerCase());
     }
 
     if (vietnamese) {
-        filteredServices = filteredServices.filter(service => service.vietnamese.toLowerCase() === vietnamese.toLowerCase());
+        filteredServices = filteredServices.filter(service => service.Vietnamese.toLowerCase() === vietnamese.toLowerCase());
     }
 
     res.json(filteredServices);
@@ -112,7 +112,7 @@ app.get('/services', async (req, res) => {
 // Get details of a specific service by name
 app.get('/services/:serviceName', (req, res) => {
     const { serviceName } = req.params;
-    const service = services.find(service => service.name.toLowerCase() === serviceName.toLowerCase());
+    const service = services.find(service => service.Name.toLowerCase() === serviceName.toLowerCase());
 
     if (service) {
         res.json(service);
